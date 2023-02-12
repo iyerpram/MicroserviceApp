@@ -16,6 +16,8 @@ namespace MicroserviceApp.Logic.Infrastructure
             builder.Services.AddEndpointsApiExplorer();
             builder.AddAuthenticationServices();
             builder.Services.AddSwagger();
+            builder.Services.AddApplicationServices();
+            builder.Services.AddDataServices();
         }
 
         public static void AddAuthenticationServices(this WebApplicationBuilder builder)

@@ -11,19 +11,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{6D343F2D-9F4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logic", "logic", "{E28F8F88-9B09-48FA-90C5-40E1555AE3FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Api.Orders", "src\api\MicroserviceApp.Api.Orders\MicroserviceApp.Api.Orders.csproj", "{26352E29-6635-4C59-B562-3493ADE8FB89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Api.Orders", "src\api\MicroserviceApp.Api.Orders\MicroserviceApp.Api.Orders.csproj", "{26352E29-6635-4C59-B562-3493ADE8FB89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Api.Customers", "src\api\MicroserviceApp.Api.Customers\MicroserviceApp.Api.Customers.csproj", "{886B21EA-9F80-4E04-B8C9-B8E11C84F0B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Api.Customers", "src\api\MicroserviceApp.Api.Customers\MicroserviceApp.Api.Customers.csproj", "{886B21EA-9F80-4E04-B8C9-B8E11C84F0B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Api.Cart", "src\api\MicroserviceApp.Api.Cart\MicroserviceApp.Api.Cart.csproj", "{161091F4-2D8B-4A3F-92A1-73046D4BC50C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Api.Cart", "src\api\MicroserviceApp.Api.Cart\MicroserviceApp.Api.Cart.csproj", "{161091F4-2D8B-4A3F-92A1-73046D4BC50C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Logic.Application", "src\logic\MicroserviceApp.Logic.Application\MicroserviceApp.Logic.Application.csproj", "{539EE81F-9BB3-49D7-A672-196BFF4F639A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Logic.Application", "src\logic\MicroserviceApp.Logic.Application\MicroserviceApp.Logic.Application.csproj", "{539EE81F-9BB3-49D7-A672-196BFF4F639A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Logic.Domain", "src\logic\MicroserviceApp.Logic.Domain\MicroserviceApp.Logic.Domain.csproj", "{6218DC8A-A861-43C1-A1B6-D76D0631747D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Logic.Domain", "src\logic\MicroserviceApp.Logic.Domain\MicroserviceApp.Logic.Domain.csproj", "{6218DC8A-A861-43C1-A1B6-D76D0631747D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Logic.Infrastructure", "src\logic\MicroserviceApp.Logic.Infrastructure\MicroserviceApp.Logic.Infrastructure.csproj", "{C7B35FA3-55EA-4A1F-B27F-0A0B4F4643AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Logic.Infrastructure", "src\logic\MicroserviceApp.Logic.Infrastructure\MicroserviceApp.Logic.Infrastructure.csproj", "{C7B35FA3-55EA-4A1F-B27F-0A0B4F4643AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Tests", "tests\MicroserviceApp.Tests\MicroserviceApp.Tests.csproj", "{89FE27E2-456F-46D6-B639-B9290544CF4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Tests", "tests\MicroserviceApp.Tests\MicroserviceApp.Tests.csproj", "{89FE27E2-456F-46D6-B639-B9290544CF4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Logic.Abstractions", "src\logic\MicroserviceApp.Logic.Abstractions\MicroserviceApp.Logic.Abstractions.csproj", "{496D44AF-1B06-431F-8EB4-2F3AE84DDCC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{89FE27E2-456F-46D6-B639-B9290544CF4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89FE27E2-456F-46D6-B639-B9290544CF4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89FE27E2-456F-46D6-B639-B9290544CF4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{496D44AF-1B06-431F-8EB4-2F3AE84DDCC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{496D44AF-1B06-431F-8EB4-2F3AE84DDCC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{496D44AF-1B06-431F-8EB4-2F3AE84DDCC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{496D44AF-1B06-431F-8EB4-2F3AE84DDCC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{6218DC8A-A861-43C1-A1B6-D76D0631747D} = {E28F8F88-9B09-48FA-90C5-40E1555AE3FE}
 		{C7B35FA3-55EA-4A1F-B27F-0A0B4F4643AF} = {E28F8F88-9B09-48FA-90C5-40E1555AE3FE}
 		{89FE27E2-456F-46D6-B639-B9290544CF4C} = {7334D9C8-F7F4-40EB-A67C-A49B3AD95B57}
+		{496D44AF-1B06-431F-8EB4-2F3AE84DDCC0} = {E28F8F88-9B09-48FA-90C5-40E1555AE3FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81C66DA3-FDE5-4DDD-950F-EF1684B6C4C9}

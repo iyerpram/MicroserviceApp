@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Handlers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroserviceApp.Logic.Abstractions\MicroserviceApp.Logic.Abstractions.csproj" />
+    <ProjectReference Include="..\MicroserviceApp.Logic.Domain\MicroserviceApp.Logic.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
