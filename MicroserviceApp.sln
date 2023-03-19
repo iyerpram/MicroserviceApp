@@ -15,23 +15,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "customers", "customers", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cart", "cart", "{90DA0BF4-E761-4662-B218-0BA8896705CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Common.Domain", "src\common\MicroserviceApp.Common.Domain\MicroserviceApp.Common.Domain.csproj", "{AC26FAA8-FBF2-4129-BE7C-1E7F58C283F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Common.Domain", "src\common\MicroserviceApp.Common.Domain\MicroserviceApp.Common.Domain.csproj", "{AC26FAA8-FBF2-4129-BE7C-1E7F58C283F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Common.Application", "src\common\MicroserviceApp.Common.Application\MicroserviceApp.Common.Application.csproj", "{296C22D1-E7DF-4CF5-97F2-877A7E0F50C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Common.Application", "src\common\MicroserviceApp.Common.Application\MicroserviceApp.Common.Application.csproj", "{296C22D1-E7DF-4CF5-97F2-877A7E0F50C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Common.Infrastructure", "src\common\MicroserviceApp.Common.Infrastructure\MicroserviceApp.Common.Infrastructure.csproj", "{E30B6FB6-FD4F-4AB2-BDE0-0CAA309CB4B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Common.Infrastructure", "src\common\MicroserviceApp.Common.Infrastructure\MicroserviceApp.Common.Infrastructure.csproj", "{E30B6FB6-FD4F-4AB2-BDE0-0CAA309CB4B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Common.Abstractions", "src\common\MicroserviceApp.Common.Abstractions\MicroserviceApp.Common.Abstractions.csproj", "{D59A33E9-28F5-4973-A1E7-C4AB7FBC8BEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Common.Abstractions", "src\common\MicroserviceApp.Common.Abstractions\MicroserviceApp.Common.Abstractions.csproj", "{D59A33E9-28F5-4973-A1E7-C4AB7FBC8BEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Orders.Application", "src\orders\MicroserviceApp.Orders.Application\MicroserviceApp.Orders.Application.csproj", "{64B980DB-6DF7-442D-8024-E07A5C99364F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Orders.Application", "src\orders\MicroserviceApp.Orders.Application\MicroserviceApp.Orders.Application.csproj", "{64B980DB-6DF7-442D-8024-E07A5C99364F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Orders.Domain", "src\orders\MicroserviceApp.Orders.Domain\MicroserviceApp.Orders.Domain.csproj", "{7967A1AC-B7AA-4F5D-85ED-C587F3A30FF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Orders.Domain", "src\orders\MicroserviceApp.Orders.Domain\MicroserviceApp.Orders.Domain.csproj", "{7967A1AC-B7AA-4F5D-85ED-C587F3A30FF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Orders.Infrastructure", "src\orders\MicroserviceApp.Orders.Infrastructure\MicroserviceApp.Orders.Infrastructure.csproj", "{F77F0FFF-8763-4DB6-8DB1-A7FD4DFE2790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Orders.Infrastructure", "src\orders\MicroserviceApp.Orders.Infrastructure\MicroserviceApp.Orders.Infrastructure.csproj", "{F77F0FFF-8763-4DB6-8DB1-A7FD4DFE2790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Orders.Abstractions", "src\orders\MicroserviceApp.Orders.Abstractions\MicroserviceApp.Orders.Abstractions.csproj", "{CC08ECB2-8329-431F-B0DE-1E648D3981AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Orders.Abstractions", "src\orders\MicroserviceApp.Orders.Abstractions\MicroserviceApp.Orders.Abstractions.csproj", "{CC08ECB2-8329-431F-B0DE-1E648D3981AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Orders.Api", "src\orders\MicroserviceApp.Orders.Api\MicroserviceApp.Orders.Api.csproj", "{8E56FA6E-D2C7-4BB3-9BDA-134519143324}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Orders.Api", "src\orders\MicroserviceApp.Orders.Api\MicroserviceApp.Orders.Api.csproj", "{8E56FA6E-D2C7-4BB3-9BDA-134519143324}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Customers.Application", "src\customers\MicroserviceApp.Customers.Application\MicroserviceApp.Customers.Application.csproj", "{B4D74480-BD30-4D9B-A75C-BC2B4CF2A68A}"
 EndProject
@@ -49,9 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Cart.Domain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Cart.Infrastructure", "src\cart\MicroserviceApp.Cart.Infrastructure\MicroserviceApp.Cart.Infrastructure.csproj", "{5251ADC9-EA02-421D-8AC8-760D1009E5D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Customers.Api", "src\customers\MicroserviceApp.Customers.Api\MicroserviceApp.Customers.Api.csproj", "{67045115-3998-483F-AD97-063EDA88F9D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Customers.Api", "src\customers\MicroserviceApp.Customers.Api\MicroserviceApp.Customers.Api.csproj", "{67045115-3998-483F-AD97-063EDA88F9D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Cart.Api", "src\cart\MicroserviceApp.Cart.Api\MicroserviceApp.Cart.Api.csproj", "{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Cart.Api", "src\cart\MicroserviceApp.Cart.Api\MicroserviceApp.Cart.Api.csproj", "{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Tests", "tests\MicroserviceApp.Tests\MicroserviceApp.Tests.csproj", "{9D00A30C-A5CC-4638-922B-0B5729D12865}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D00A30C-A5CC-4638-922B-0B5729D12865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D00A30C-A5CC-4638-922B-0B5729D12865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D00A30C-A5CC-4638-922B-0B5729D12865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D00A30C-A5CC-4638-922B-0B5729D12865}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +169,7 @@ Global
 		{5251ADC9-EA02-421D-8AC8-760D1009E5D2} = {90DA0BF4-E761-4662-B218-0BA8896705CA}
 		{67045115-3998-483F-AD97-063EDA88F9D3} = {6360986C-6BB9-4613-8C8D-96098BB4BEBD}
 		{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9} = {90DA0BF4-E761-4662-B218-0BA8896705CA}
+		{9D00A30C-A5CC-4638-922B-0B5729D12865} = {90935605-76FB-409E-B762-E2D1A2F2E64B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2DFDC78-148B-48F1-82BC-67CE1A52A3C5}
