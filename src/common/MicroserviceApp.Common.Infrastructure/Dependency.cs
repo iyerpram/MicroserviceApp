@@ -1,4 +1,5 @@
 ﻿using MicroserviceApp.Common.Application;
+using MicroserviceApp.Common.Application.Messaging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +61,8 @@ namespace MicroserviceApp.Common.Infrastructure
                 };
             });
             builder.Services.AddAuthorization();
+
+            builder.Services.AddSingleton<IMessagingProviderFactory, MessagingProviderFactory>();
         }
 
         public static void ConfigureApp(this IApplicationBuilder app)

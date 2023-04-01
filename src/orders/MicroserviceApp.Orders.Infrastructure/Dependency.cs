@@ -1,4 +1,6 @@
-﻿using MicroserviceApp.Common.Infrastructure;
+﻿using MicroserviceApp.Common.Application.Database;
+using MicroserviceApp.Common.Application.Messaging;
+using MicroserviceApp.Common.Infrastructure;
 using MicroserviceApp.Orders.Application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,8 @@ namespace MicroserviceApp.Orders.Infrastructure
         public static void ConfigureServices(this WebApplicationBuilder builder)
         {
             builder.ConfigureAppServices(typeof(OrderService));
+            builder.Services.AddSingleton<IMessagingProvider, AzureServiceBusMessagingProvider>();
+            builder.Services.AddSingleton<IDbProvider, CosmosDbProvider>();
         }
 
         public static void ConfigureApi(this IApplicationBuilder app)
