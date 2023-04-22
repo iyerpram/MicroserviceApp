@@ -1,5 +1,5 @@
 ﻿using MicroserviceApp.Common.Application;
-using MicroserviceApp.Common.Application.Messaging;
+using MicroserviceApp.Common.Infrastructure.Messaging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,26 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
-namespace MicroserviceApp.Common.Application.Messaging
+namespace MicroserviceApp.Common.Infrastructure.Messaging
 {
-    public class AzureServiceBusMessagingProvider : IMessagingProvider
+    public class AwsSnsMessagingProvider : IMessagingProvider
     {
         private IConfiguration Configuration { get; }
         public string ConfigSection { get; }
 
-        private string _topic => Configuration[$"{ConfigSection}:ServiceBus:TopicName"];
+        private string _topic => Configuration[$"{ConfigSection}:SNS:TopicName"];
 
-        public AzureServiceBusMessagingProvider(IConfiguration configuration)
+        public AwsSnsMessagingProvider(IConfiguration configuration)
         {
             Configuration = configuration;
             ConfigSection = "Messaging";
         }
-        public AzureServiceBusMessagingProvider(IConfiguration configuration, string configSection = "")
-        {
+        public AwsSnsMessagingProvider(IConfiguration configuration, string configSection = "") {
             Configuration = configuration;
             ConfigSection = !string.IsNullOrWhiteSpace(configSection) ? $"Messaging:{configSection}" : "Messaging";
         }
-
+        
         public async Task<bool> PublishMessageAsync<T>(string subject, T messageBody)
         {
             var message = JsonSerializer.Serialize(messageBody);

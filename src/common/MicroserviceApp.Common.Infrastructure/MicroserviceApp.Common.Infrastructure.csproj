@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MicroserviceApp.Common.Abstractions\MicroserviceApp.Common.Abstractions.csproj" />
     <ProjectReference Include="..\MicroserviceApp.Common.Application\MicroserviceApp.Common.Application.csproj" />
   </ItemGroup>
 

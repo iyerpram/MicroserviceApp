@@ -1,7 +1,7 @@
-﻿using MicroserviceApp.Common.Application.Messaging.Enums;
-using Microsoft.Extensions.Configuration;
+﻿using MicroserviceApp.Common.Abstractions.Messaging;
+using MicroserviceApp.Common.Application.Messaging.Enums;
 
-namespace MicroserviceApp.Common.Application.Messaging
+namespace MicroserviceApp.Common.Infrastructure.Messaging
 {
     public interface IMessagingProviderFactory
     {

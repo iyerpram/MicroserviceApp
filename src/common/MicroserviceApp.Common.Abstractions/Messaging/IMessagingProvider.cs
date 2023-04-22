@@ -1,4 +1,4 @@
-﻿namespace MicroserviceApp.Common.Application.Messaging
+﻿namespace MicroserviceApp.Common.Abstractions.Messaging
 {
     public interface IMessagingProvider
     {

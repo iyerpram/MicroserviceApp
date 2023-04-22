@@ -1,7 +1,7 @@
 ﻿using MicroserviceApp.Cart.Application;
-using MicroserviceApp.Common.Application.Database;
-using MicroserviceApp.Common.Application.Messaging;
 using MicroserviceApp.Common.Infrastructure;
+using MicroserviceApp.Common.Infrastructure.Database;
+using MicroserviceApp.Common.Infrastructure.Messaging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
