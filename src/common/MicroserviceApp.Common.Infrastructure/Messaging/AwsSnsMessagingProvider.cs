@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MicroserviceApp.Common.Abstractions.Messaging;
+using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
 namespace MicroserviceApp.Common.Infrastructure.Messaging
@@ -15,9 +16,9 @@ namespace MicroserviceApp.Common.Infrastructure.Messaging
             Configuration = configuration;
             ConfigSection = "Messaging";
         }
-        public AwsSnsMessagingProvider(IConfiguration configuration, string configSection = "") {
+        public AwsSnsMessagingProvider(IConfiguration configuration, string appName = "") {
             Configuration = configuration;
-            ConfigSection = !string.IsNullOrWhiteSpace(configSection) ? $"Messaging:{configSection}" : "Messaging";
+            ConfigSection = !string.IsNullOrWhiteSpace(appName) ? $"Messaging:{appName}" : "Messaging";
         }
         
         public async Task<bool> PublishMessageAsync<T>(string subject, T messageBody)
@@ -27,11 +28,21 @@ namespace MicroserviceApp.Common.Infrastructure.Messaging
             return await Task.FromResult(true);
         }
 
-        public async Task<T> SubscribeMessageAsync<T>(string subject)
+        public async Task<T> ReadMessageAsync<T>()
         {
             //logic to read message from SNS
             var messageBody = "";
             return await Task.FromResult(JsonSerializer.Deserialize<T>(messageBody));
+        }
+
+        public async Task SubscribeMessageAsync<T>(Delegate handler)
+        {
+            //logic to read message from Service Bus
+            Task.Factory.StartNew(() => {
+                string message = "", token = "";
+                var response = JsonSerializer.Deserialize<T>(message);
+                handler.DynamicInvoke(response);
+            });
         }
     }
 }

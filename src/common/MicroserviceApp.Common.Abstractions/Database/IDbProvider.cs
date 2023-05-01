@@ -1,10 +1,10 @@
 ﻿namespace MicroserviceApp.Common.Abstractions.Database
 {
-    public interface IDbProvider
+    public interface IDbProvider<TEntity> where TEntity : class
     {
-        public Task<bool> CreateItemAsync<T>(string container, T item);
-        public Task<bool> UpdateItemAsync<T>(string container, string id, T item);
-        public Task<T> GetItemAsync<T>(string container, string id);        
-        public Task<T> DeleteItemAsync<T>(string container, string id, T item);
+        public Task<bool> CreateItemAsync(string container, TEntity item);
+        public Task<bool> UpdateItemAsync(string container, string id, TEntity item);
+        public Task<TEntity> GetItemAsync(string container, string id);        
+        public Task<TEntity> DeleteItemAsync(string container, string id, TEntity item);
     }
 }

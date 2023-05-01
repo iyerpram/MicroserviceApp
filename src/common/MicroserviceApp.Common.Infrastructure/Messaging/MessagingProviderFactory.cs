@@ -1,4 +1,4 @@
-﻿using MicroserviceApp.Common.Application.Messaging.Enums;
+﻿using MicroserviceApp.Common.Abstractions.Messaging;
 using Microsoft.Extensions.Configuration;
 
 namespace MicroserviceApp.Common.Infrastructure.Messaging
@@ -12,13 +12,13 @@ namespace MicroserviceApp.Common.Infrastructure.Messaging
             Configuration = configuration;
         }
 
-        public IMessagingProvider GetMessagingProvider(MessagingProviderType providerType, string configSection = "")
+        public IMessagingProvider GetMessagingProvider(MessagingProviderType providerType, string appName = "")
         {
             return providerType switch
             {
-                MessagingProviderType.AzureServiceBus => new AzureServiceBusMessagingProvider(Configuration, configSection),
-                MessagingProviderType.AWS_SNS => new AwsSnsMessagingProvider(Configuration, configSection),
-                _ => new AzureServiceBusMessagingProvider(Configuration, configSection)
+                MessagingProviderType.AzureServiceBus => new AzureServiceBusMessagingProvider(Configuration, appName),
+                MessagingProviderType.AWS_SNS => new AwsSnsMessagingProvider(Configuration, appName),
+                _ => new AzureServiceBusMessagingProvider(Configuration, appName)
             };
         }
     }

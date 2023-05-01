@@ -3,6 +3,7 @@
     public interface IMessagingProvider
     {
         Task<bool> PublishMessageAsync<T>(string subject, T messageBody);
-        Task<T> SubscribeMessageAsync<T>(string subject);
+        Task<T> ReadMessageAsync<T>();
+        Task SubscribeMessageAsync<T>(Delegate handler);
     }
 }

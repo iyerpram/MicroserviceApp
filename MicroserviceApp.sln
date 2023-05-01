@@ -53,7 +53,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Customers.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Cart.Api", "src\cart\MicroserviceApp.Cart.Api\MicroserviceApp.Cart.Api.csproj", "{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceApp.Tests", "tests\MicroserviceApp.Tests\MicroserviceApp.Tests.csproj", "{9D00A30C-A5CC-4638-922B-0B5729D12865}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceApp.Tests", "tests\MicroserviceApp.Tests\MicroserviceApp.Tests.csproj", "{9D00A30C-A5CC-4638-922B-0B5729D12865}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "payment", "payment", "{4D1BF255-C5FB-497E-AF38-FFF5608B741E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +172,7 @@ Global
 		{67045115-3998-483F-AD97-063EDA88F9D3} = {6360986C-6BB9-4613-8C8D-96098BB4BEBD}
 		{254ADA55-9E23-4BEC-88B9-F72F81F2F1C9} = {90DA0BF4-E761-4662-B218-0BA8896705CA}
 		{9D00A30C-A5CC-4638-922B-0B5729D12865} = {90935605-76FB-409E-B762-E2D1A2F2E64B}
+		{4D1BF255-C5FB-497E-AF38-FFF5608B741E} = {49B2FF1F-EB99-493C-B907-29C751AF43EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2DFDC78-148B-48F1-82BC-67CE1A52A3C5}

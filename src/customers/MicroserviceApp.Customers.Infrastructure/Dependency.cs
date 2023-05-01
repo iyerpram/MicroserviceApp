@@ -1,4 +1,6 @@
-﻿using MicroserviceApp.Common.Infrastructure;
+﻿using MicroserviceApp.Common.Abstractions.Database;
+using MicroserviceApp.Common.Abstractions.Messaging;
+using MicroserviceApp.Common.Infrastructure;
 using MicroserviceApp.Common.Infrastructure.Database;
 using MicroserviceApp.Common.Infrastructure.Messaging;
 using MicroserviceApp.Customers.Application;
@@ -13,7 +15,7 @@ namespace MicroserviceApp.Customers.Infrastructure
         {
             builder.ConfigureAppServices(typeof(CustomerService));
             builder.Services.AddSingleton<IMessagingProvider, AzureServiceBusMessagingProvider>();
-            builder.Services.AddSingleton<IDbProvider, CosmosDbProvider>();
+            builder.Services.AddSingleton(typeof(IDbProvider<>), typeof(CosmosDbProvider<>));
         }
 
         public static void ConfigureApi(this IApplicationBuilder app)

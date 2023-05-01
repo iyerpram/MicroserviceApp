@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MicroserviceApp.Common.Abstractions.Messaging;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
 namespace MicroserviceApp.Common.Infrastructure.Messaging
@@ -8,7 +10,9 @@ namespace MicroserviceApp.Common.Infrastructure.Messaging
         private IConfiguration Configuration { get; }
         public string ConfigSection { get; }
 
-        private string _topic => Configuration[$"{ConfigSection}:ServiceBus:TopicName"];
+        private string _topicName => Configuration[$"{ConfigSection}:ServiceBus:TopicName"];
+        private string _subscriptionName => Configuration[$"{ConfigSection}:ServiceBus:SubscriptionName"];
+        private string _connectionString => Configuration[$"{ConfigSection}:ServiceBus:ConnectionString"];
 
         public AzureServiceBusMessagingProvider(IConfiguration configuration)
         {
@@ -24,15 +28,38 @@ namespace MicroserviceApp.Common.Infrastructure.Messaging
         public async Task<bool> PublishMessageAsync<T>(string subject, T messageBody)
         {
             var message = JsonSerializer.Serialize(messageBody);
-            //logic to publish SNS message
+            //logic to publish Service Bus message
             return await Task.FromResult(true);
         }
 
-        public async Task<T> SubscribeMessageAsync<T>(string subject)
+        public async Task<T> ReadMessageAsync<T>()
         {
             //logic to read message from SNS
             var messageBody = "";
             return await Task.FromResult(JsonSerializer.Deserialize<T>(messageBody));
+        }
+
+        public async Task SubscribeMessageAsync<T>(Delegate handler)
+        {
+            //var client = new SubscriptionClient(_connectionString, _topicName, _subscriptionName, ReceiveMode.PeekLock, null);
+            //client.RegisterMessageHandler(
+            //    async (message, token) =>
+            //    {
+            //        var response = JsonSerializer.Deserialize<T>(message);
+            //        handler.DynamicInvoke(response);
+            //        await client.CompleteAsync(message.SystemProperties.LockToken);
+            //    },
+            //    async (exception) => {
+
+            //    }
+            //);
+
+            //logic to read message from Service Bus
+            Task.Factory.StartNew(() => {
+                string message = "", token = "";
+                var response = JsonSerializer.Deserialize<T>(message);
+                handler.DynamicInvoke(response);
+            });
         }
     }
 }
