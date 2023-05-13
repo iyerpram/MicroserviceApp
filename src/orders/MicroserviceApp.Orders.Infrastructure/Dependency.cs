@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using MicroserviceApp.Common.Abstractions.Database;
+﻿using MicroserviceApp.Common.Abstractions.Database;
 using MicroserviceApp.Common.Abstractions.Messaging;
 using MicroserviceApp.Common.Infrastructure;
 using MicroserviceApp.Common.Infrastructure.Database;
 using MicroserviceApp.Common.Infrastructure.Messaging;
 using MicroserviceApp.Orders.Application;
-using MicroserviceApp.Orders.Infrastructure.Mappings;
+using MicroserviceApp.Orders.Application.Mappings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

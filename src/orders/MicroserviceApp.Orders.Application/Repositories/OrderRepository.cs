@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MicroserviceApp.Common.Abstractions.Database;
-using MicroserviceApp.Common.Application;
 using MicroserviceApp.Common.Domain.Models;
 using MicroserviceApp.Orders.Application.RequestHandlers;
 using MicroserviceApp.Orders.Domain.Models;
@@ -21,8 +20,6 @@ namespace MicroserviceApp.Orders.Application
         public IConfiguration _configuration { get; }
         public IMapper _mapper { get; }
 
-        private string _container => _configuration?["Database:Container"] ?? string.Empty;
-
         public OrderRepository(IExtendedDbProvider<Order> dbProvider, IConfiguration configuration, IMapper mapper)
         {
             _dbProvider = dbProvider;
@@ -32,62 +29,13 @@ namespace MicroserviceApp.Orders.Application
 
         public async Task<IEnumerable<OrderDto>> GetOrdersAsync(string userId)
         {
-            //return await _dbProvider.ExecuteQueryAsync<OrderDto>(_container, $"select * from orders where userId={userId}");
-            return await Task.FromResult(new List<OrderDto> {
-                new OrderDto {
-                    Id = Guid.NewGuid(),
-                    Products = new List<ProductDto> {
-                        new ProductDto{
-                            Id = Guid.NewGuid(),
-                            Description = "test 1",
-                            Name = "test 1",
-                            Price = 10
-                        },
-                        new ProductDto{
-                            Id = Guid.NewGuid(),
-                            Description = "test 2",
-                            Name = "test 2",
-                            Price = 20
-                        }
-                    },
-                    User = new UserDto{
-                        Id = 1,
-                        Name = "Test User",
-                        Email = "test@mail.com"
-                    }
-                }
-            });
+            return await _dbProvider.ExecuteQueryAsync<OrderDto>($"select * from orders where userId={userId}");
         }
 
         public async Task<OrderDto> GetOrderByIdAsync(Guid orderId)
         {
-            //var order = await _dbProvider.GetItemAsync(_container, orderId.ToString());
-            //return _mapper.Map<OrderDto>(order);
-
-            return await Task.FromResult(new OrderDto
-            {
-                Id = Guid.NewGuid(),
-                Products = new List<ProductDto> {
-                    new ProductDto {
-                        Id = Guid.NewGuid(),
-                        Description = "test 1",
-                        Name = "test 1",
-                        Price = 10
-                    },
-                    new ProductDto {
-                        Id = Guid.NewGuid(),
-                        Description = "test 2",
-                        Name = "test 2",
-                        Price = 20
-                    }
-                },
-                User = new UserDto
-                {
-                    Id = 1,
-                    Name = "Test User",
-                    Email = "test@mail.com"
-                }
-            });
+            var order = await _dbProvider.GetItemAsync(orderId.ToString());
+            return _mapper.Map<OrderDto>(order);
         }
 
         public async Task<OrderDto> CreateOrderAsync(CreateOrder request)
@@ -98,9 +46,12 @@ namespace MicroserviceApp.Orders.Application
                 Products = _mapper.Map<IEnumerable<Product>>(request.Products),
                 User = _mapper.Map<User>(request.User)
             };
-            //var isAdded = await _dbProvider.CreateItemAsync(_container, order);
+            var isAdded = await _dbProvider.CreateItemAsync(order);
 
-            return await Task.FromResult(_mapper.Map<OrderDto>(order));
+            if (isAdded)
+                return await Task.FromResult(_mapper.Map<OrderDto>(order));
+            else
+                return null;
         }
     }
 }

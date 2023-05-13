@@ -7,38 +7,39 @@ namespace MicroserviceApp.Common.Infrastructure.Database
     {
         public IConfiguration Configuration { get; }
         public string _connectionString => Configuration["Database:ConnectionString"];
+        public string _container => Configuration?["Database:Container"];
 
         public DynamoDbProvider(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public async Task<bool> CreateItemAsync(string container, TEntity item)
+        public async Task<bool> CreateItemAsync(TEntity item)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateItemAsync(string container, string id, TEntity item)
+        public async Task<bool> UpdateItemAsync(string id, TEntity item)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<TEntity> GetItemAsync(string container, string id)
+        public async Task<TEntity> GetItemAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<TEntity> DeleteItemAsync(string container, string id, TEntity item)
+        public async Task<TEntity> DeleteItemAsync(string id, TEntity item)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string container, string query)
+        public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string query)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> ExecuteCommandAsync(string container, string query)
+        public async Task<bool> ExecuteCommandAsync(string query)
         {
             throw new NotImplementedException();
         }

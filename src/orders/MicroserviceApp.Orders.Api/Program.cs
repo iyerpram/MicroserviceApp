@@ -1,3 +1,4 @@
+using MicroserviceApp.Orders.Api.Observers;
 using MicroserviceApp.Orders.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +9,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.ConfigureServices();
-
+builder.Services.AddHostedService<MessageObserver>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

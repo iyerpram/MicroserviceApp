@@ -4,6 +4,6 @@
     {
         Task<bool> PublishMessageAsync<T>(string subject, T messageBody);
         Task<T> ReadMessageAsync<T>();
-        Task SubscribeMessageAsync<T>(Delegate handler);
+        Task SubscribeMessageAsync<TResponse>(Func<TResponse, Task> handler);
     }
 }

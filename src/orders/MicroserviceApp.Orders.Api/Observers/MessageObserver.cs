@@ -38,7 +38,7 @@ namespace MicroserviceApp.Orders.Api.Observers
 
         void ReadMessage(object state)
         {
-            _messagingProvider.SubscribeMessageAsync<OrderDto>(ProcessMessage);
+            _messagingProvider.SubscribeMessageAsync<CreateOrder>(ProcessMessage);
         }
 
         async Task ProcessMessage(CreateOrder request)

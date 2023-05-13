@@ -35,13 +35,13 @@ namespace MicroserviceApp.Common.Infrastructure.Messaging
             return await Task.FromResult(JsonSerializer.Deserialize<T>(messageBody));
         }
 
-        public async Task SubscribeMessageAsync<T>(Delegate handler)
+        public async Task SubscribeMessageAsync<TResponse>(Func<TResponse, Task> handler)
         {
             //logic to read message from Service Bus
             Task.Factory.StartNew(() => {
                 string message = "", token = "";
-                var response = JsonSerializer.Deserialize<T>(message);
-                handler.DynamicInvoke(response);
+                var response = JsonSerializer.Deserialize<TResponse>(message);
+                handler.Invoke(response);
             });
         }
     }

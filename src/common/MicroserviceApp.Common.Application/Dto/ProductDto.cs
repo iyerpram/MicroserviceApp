@@ -1,4 +1,4 @@
-﻿namespace MicroserviceApp.Orders.Application
+﻿namespace MicroserviceApp.Common.Application
 {
     public class ProductDto
     {
