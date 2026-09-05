@@ -1,2 +1,2 @@
 # MicroserviceApp
-.Net Microservice app
+.NET microservices architecture with message-driven communication between services
