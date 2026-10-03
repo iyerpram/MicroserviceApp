@@ -1,127 +1,152 @@
 # MicroserviceApp
 
 A .NET microservices reference architecture demonstrating service
-decomposition, inter-service messaging, and independent deployability —
-built to show practical, production-oriented microservices patterns rather
-than a single-service "microservice in name only" demo.
+decomposition, pluggable asynchronous messaging, and database-per-service
+design — built to explore practical microservices patterns rather than a
+single-service "microservice in name only" demo.
 
 ## Overview
 
-<!-- TODO: Name the actual services in this solution and what each owns,
-e.g.:
-- OrderService - owns order creation, cancellation, and status
-- PaymentService - owns payment processing and refunds
-- InventoryService - owns stock levels and reservations
-This is the most important missing piece for a reader - without it, a
-recruiter/interviewer can't tell what problem the system actually solves. -->
+Two services model a simple e-commerce-style domain:
+
+- **Orders** — owns order creation and order state
+- **Customers** — owns customer records
+
+The two communicate asynchronously rather than through direct synchronous
+calls, so each service can evolve, fail, and scale independently of the
+other.
 
 ## Architecture
 
 ```
-Client → API Gateway → [Service A] → Message Broker → [Service B]
-                            ↓                              ↓
-                       Database A                     Database B
+Client → [Orders Service]  →  Event Bus  →  [Customers Service]
+              ↓                                      ↓
+         Orders DB                             Customers DB
 ```
 
-<!-- TODO: Replace with your actual topology. Key things worth showing in
-this diagram if they apply to your implementation:
-- Is there an API Gateway / BFF, or do clients call services directly?
-- Does each service own its own database (database-per-service), or is
-  there a shared database?
-- Synchronous calls (HTTP) vs asynchronous messaging (RabbitMQ/Kafka) -
-  which operations use which, and why? -->
+There is currently no API Gateway in front of the services — this is a
+local/architectural reference project rather than something deployed as a
+production system, so clients call each service directly.
 
 ### Services
 
 | Service | Responsibility | Communicates via |
 |---|---|---|
-| <!-- TODO --> | <!-- TODO --> | <!-- TODO: HTTP / RabbitMQ / Kafka --> |
-| <!-- TODO --> | <!-- TODO --> | <!-- TODO --> |
+| Orders | Order creation and order state | Publishes/consumes events via the pluggable event provider |
+| Customers | Customer records | Publishes/consumes events via the pluggable event provider |
 
-### Messaging
+### Messaging — pluggable by design
 
-This project uses <!-- TODO: RabbitMQ and/or Kafka - specify which, and for
-which interactions -->. Asynchronous messaging is used for
-<!-- TODO: e.g. "cross-service events like OrderPlaced, so downstream
-services (Inventory, Notifications) react without the Order service
-blocking on their availability" -->, which decouples services from each
-other's uptime and avoids cascading failures from synchronous call chains.
+Rather than hard-coding a single message broker, this project defines an
+event provider abstraction that any concrete broker can implement. The
+services depend only on that abstraction, not on RabbitMQ or Kafka
+directly — swapping the underlying broker (or adding a new one) means
+writing a new implementation of the interface, not changing any service
+logic. This is the main architectural decision worth discussing in an
+interview: it trades a small amount of up-front abstraction for avoiding
+vendor lock-in to a specific broker, and it makes it straightforward to run
+the services against a lightweight in-memory provider for local
+development or testing without standing up real infrastructure.
+
+RabbitMQ and Kafka are the two concrete providers this project targets.
 
 ## Tech stack
 
 - .NET / C# — ASP.NET Core Web API per service
-- <!-- TODO: RabbitMQ and/or Kafka --> for asynchronous messaging
-- <!-- TODO: SQL Server / other persistence, and whether it's
-  database-per-service -->
-- Docker / Docker Compose for local orchestration
-- <!-- TODO: any API gateway, e.g. Ocelot/YARP, if used -->
+- A pluggable event-provider abstraction, with RabbitMQ and Kafka as
+  concrete implementations
+- Database-per-service — each service owns its own data store, with no
+  shared database between Orders and Customers
+- Docker support (`.dockerignore` present; see Setup below)
 
 ## Project structure
 
 ```
 MicroserviceApp/
 ├── src/
-│   ├── <!-- TODO: ServiceA -->/
-│   ├── <!-- TODO: ServiceB -->/
-│   └── <!-- TODO: Shared/Common libraries, if any -->/
-├── docker-compose.yml
+│   ├── Orders/          # Orders service
+│   └── Customers/       # Customers service
+├── tests/
+│   └── MicroserviceApp.Tests/
+├── MicroserviceApp.sln
 └── README.md
 ```
 
 ## Getting started
 
 ### Prerequisites
-- .NET SDK <!-- TODO: version -->
-- Docker & Docker Compose
-- <!-- TODO: any other prerequisite -->
+- .NET SDK
+- Docker (if running a message broker locally via container)
 
 ### Run locally
 ```bash
 git clone https://github.com/iyerpram/MicroserviceApp.git
 cd MicroserviceApp
-docker compose up -d       # starts message broker, databases, etc.
 dotnet restore
 dotnet build
 ```
 
-Then run each service, either individually:
+Run each service individually:
 ```bash
-dotnet run --project src/<!-- TODO: ServiceA -->
+dotnet run --project src/Orders
+dotnet run --project src/Customers
 ```
-or all together via the provided `docker-compose.yml` if it includes the
-services themselves, not just their infrastructure dependencies.
 
-### Verifying it's running
-<!-- TODO: A quick smoke-test example - e.g. "POST to
-http://localhost:5000/orders to create an order, then check
-http://localhost:5001/inventory to see the stock level drop after the
-message is consumed." This kind of concrete example is what makes a
-README demonstrable rather than just descriptive. -->
+Since there's no API Gateway, call each service's own endpoints directly
+during local testing.
 
-## Design decisions worth calling out
+## Design decisions worth discussing
 
-<!-- TODO: This section is where you turn the README into interview
-material. A few prompts to fill in based on what you actually did: -->
-- **Why separate services here, rather than a modular monolith?**
-  <!-- TODO -->
-- **How do services handle failure in a dependency?** (retries, circuit
-  breakers, dead-letter queues, etc.) <!-- TODO -->
-- **How is data consistency handled across services** (given no
-  distributed transactions)? — e.g. eventual consistency via events, the
-  Saga pattern, outbox pattern <!-- TODO -->
-- **How would this scale under real load?** — which service is the
-  bottleneck, and how would you address it? <!-- TODO -->
+- **Why a pluggable event provider instead of coding directly against one
+  broker?** Keeps the services decoupled from any single messaging
+  technology, avoids vendor lock-in, and makes local development/testing
+  easier since a lightweight in-memory implementation can stand in for a
+  real broker without infrastructure setup.
+- **Why separate Orders and Customers into different services?** Each owns
+  a distinct bounded context with its own data and its own reasons to
+  change independently.
+- **Why database-per-service here, rather than a shared database?** Keeps
+  each service's internal data model private and lets each evolve its
+  schema without coordinating with the other — the trade-off is that any
+  data consistency between Orders and Customers has to be handled through
+  events rather than a database transaction.
+
+## Known gaps / honest limitations
+
+This is a reference/learning project, not a production system, and a few
+things are intentionally or currently not yet in place:
+
+- **No automated tests yet.** The `tests/MicroserviceApp.Tests` project
+  exists as scaffolding but doesn't currently have meaningful unit or
+  integration test coverage — a natural next step before presenting this
+  as evidence of testing discipline.
+- **No API Gateway.** Clients call each service directly; adding a gateway
+  (or an aggregation layer) would be a reasonable extension if this moved
+  toward looking like a deployable system.
+- **No explicit failure-handling strategy yet** — retries, circuit
+  breakers, or dead-letter queues around the event provider aren't
+  implemented. Worth having a point of view on this even before
+  implementing it, since it's a very likely interview follow-up question
+  for any message-driven architecture.
+- **Data consistency across services** (given no shared database or
+  distributed transactions) isn't yet handled via a specific pattern
+  (e.g., Saga, outbox) — currently an open design question rather than an
+  implemented solution.
 
 ## What this demonstrates
 
-- Service decomposition and bounded contexts
-- Asynchronous, message-driven communication between services
-- Independent deployability of each service
-- <!-- TODO: add anything else specific to your implementation -->
+- Service decomposition around bounded contexts (Orders, Customers)
+- Asynchronous, message-driven communication decoupled from any single
+  broker via a pluggable event-provider abstraction
+- Database-per-service design
 
 ## Roadmap / possible extensions
-- Add distributed tracing (e.g. OpenTelemetry) across service calls
-- Add a circuit breaker (e.g. Polly) around inter-service HTTP calls
-- Deploy to Azure (Container Apps / AKS) with Application Insights for
-  observability — see the [IncidentsAi](https://github.com/iyerpram/IncidentsAi)
-  project for a related direction on the ops/observability side
+- Add real unit and integration test coverage
+- Implement a concrete failure-handling strategy (retries, circuit
+  breakers, dead-letter queues) around the event provider
+- Address cross-service data consistency explicitly (e.g., Saga or outbox
+  pattern)
+- Add an API Gateway if this moves toward a deployable system
+- Deploy to Azure with observability (Application Insights) — see the
+  [IncidentsAi](https://github.com/iyerpram/IncidentsAi) project for a
+  related direction on the ops/observability side
