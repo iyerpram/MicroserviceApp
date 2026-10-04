@@ -19,6 +19,7 @@ namespace MicroserviceApp.Cart.Infrastructure
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddSingleton<IMessagingProvider, AwsSnsMessagingProvider>();
             builder.Services.AddSingleton(typeof(IDbProvider<>), typeof(DynamoDbProvider<>));
+            builder.Services.AddSingleton(typeof(IExtendedDbProvider<>), typeof(DynamoDbProvider<>));
             builder.Services.AddSingleton<ICartRepository, CartRepository>();
         }
 

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using MicroserviceApp.Common.Abstractions.Messaging;
-using MicroserviceApp.Orders.Application;
+using MicroserviceApp.Common.Application.Events;
 using MicroserviceApp.Orders.Application.RequestHandlers;
 using System.Text.Json;
 
@@ -12,15 +12,13 @@ namespace MicroserviceApp.Orders.Api.Observers
         public IMessagingProvider _messagingProvider { get; }
         public IMediator _mediator { get; }
         public ILogger<MessageObserver> _logger { get; }
-        public IMessagingProviderFactory _messageProviderFactory { get; }
 
         public MessageObserver(IMessagingProvider messagingProvider, IMediator mediator
-            , ILogger<MessageObserver> logger, IMessagingProviderFactory messageProviderFactory) 
+            , ILogger<MessageObserver> logger) 
         {
             _messagingProvider = messagingProvider;
             _mediator = mediator;
             _logger = logger;
-            _messageProviderFactory = messageProviderFactory;
         }        
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -31,17 +29,18 @@ namespace MicroserviceApp.Orders.Api.Observers
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            //New Timer does not have a stop. 
             _timer?.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
 
         void ReadMessage(object state)
         {
-            _messagingProvider.SubscribeMessageAsync<CreateOrder>(ProcessMessage);
+            _messagingProvider.SubscribeMessageAsync<CreateOrder>(ProcessCreateOrder);
+            _messagingProvider.SubscribeMessageAsync<PaymentProcessed>(ProcessPaymentProcessed);
+            _messagingProvider.SubscribeMessageAsync<FulfilmentUpdated>(ProcessFulfilmentUpdated);
         }
 
-        async Task ProcessMessage(CreateOrder request)
+        async Task ProcessCreateOrder(CreateOrder request)
         {
             if (request?.User == null || (!request?.Products?.Any() ?? true))
                 _logger.LogWarning($"Invalid order creation request received. Request: {JsonSerializer.Serialize(request)}");
@@ -49,15 +48,27 @@ namespace MicroserviceApp.Orders.Api.Observers
             var response = await _mediator.Send(request);
             if (response == null)
                 _logger.LogWarning($"Order creation failed. Request: {JsonSerializer.Serialize(request)}");
-
-            _logger.LogInformation($"Order creation successfull, order id: {response.Id}");
-
-            var cartMessageProvider = _messageProviderFactory.GetMessagingProvider(MessagingProviderType.AWS_SNS, "Cart");
-            var isPublished = await cartMessageProvider.PublishMessageAsync("Order Creation Successfull", response);
-            if(isPublished)
-                _logger.LogInformation($"Order creation message posted successfully, order id: {response.Id}");
             else
-                _logger.LogInformation($"Order creation message failed, order id: {response.Id}");
+                _logger.LogInformation($"Order creation successfull, order id: {response.Id}");
+        }
+
+        async Task ProcessPaymentProcessed(PaymentProcessed payment)
+        {
+            if (payment == null || payment.OrderId == Guid.Empty)
+                return;
+
+            var status = string.Equals(payment.Status, "Completed", StringComparison.OrdinalIgnoreCase)
+                ? "Paid"
+                : "PaymentFailed";
+            await _mediator.Send(new UpdateOrderStatus { OrderId = payment.OrderId, Status = status });
+        }
+
+        async Task ProcessFulfilmentUpdated(FulfilmentUpdated fulfilment)
+        {
+            if (fulfilment == null || fulfilment.OrderId == Guid.Empty)
+                return;
+
+            await _mediator.Send(new UpdateOrderStatus { OrderId = fulfilment.OrderId, Status = fulfilment.Status });
         }
     }
 }

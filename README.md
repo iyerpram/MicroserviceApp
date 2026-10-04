@@ -7,65 +7,87 @@ single-service "microservice in name only" demo.
 
 ## Overview
 
-Two services model a simple e-commerce-style domain:
+Each bounded context is its own ASP.NET Core service. Services do not call
+each other over HTTP. They persist to their own store through
+`IDbProvider` / `IExtendedDbProvider` and talk through
+`IMessagingProvider` / `IMessagingProviderFactory`.
 
-- **Orders** — owns order creation and order state
-- **Customers** — owns customer records
+```
+Client → Cart / Customers / Orders / Payment / Inventory / Fulfilment / Notification
+              ↓
+         Event bus (pluggable: Azure Service Bus, AWS SNS, …)
+              ↓
+         Each service’s own database
+```
 
-The two communicate asynchronously rather than through direct synchronous
-calls, so each service can evolve, fail, and scale independently of the
-other.
+There is currently no API Gateway — clients call each service directly.
 
 ## Architecture
 
-```
-Client → [Orders Service]  →  Event Bus  →  [Customers Service]
-              ↓                                      ↓
-         Orders DB                             Customers DB
-```
+Each service follows the same layers:
 
-There is currently no API Gateway in front of the services — this is a
-local/architectural reference project rather than something deployed as a
-production system, so clients call each service directly.
+| Project | Role |
+|---|---|
+| **Api** | Controllers, `Program`, `MessageObserver` hosted subscriber |
+| **Application** | MediatR handlers, DTOs, repository interfaces, AutoMapper |
+| **Domain** | Aggregate models owned by that service |
+| **Infrastructure** | DI: wires `IMessagingProvider`, `IDbProvider`, repositories |
+| **Abstractions** | Service-specific contracts (reserved for repositories/ports) |
+
+Shared infrastructure lives under `src/common`:
+
+- `IMessagingProvider` — publish / subscribe / read
+- `IMessagingProviderFactory` — resolve a broker by `MessagingProviderType` and target app
+- `IDbProvider<T>` / `IExtendedDbProvider<T>` — Cosmos and Dynamo implementations
+
+Cross-service contracts live in `MicroserviceApp.Common.Application.Events`
+so services stay decoupled from each other’s application models.
+
+### Checkout flow (async)
+
+```
+Cart checkout
+  → Orders (CreateOrder) publishes OrderCreated
+    → Payment processes payment, publishes PaymentProcessed
+      → Inventory reserves stock, publishes InventoryReserved
+        → Fulfilment creates a shipment, publishes FulfilmentUpdated
+Notification consumes NotificationRequested from each of the above.
+Orders also consumes PaymentProcessed and FulfilmentUpdated to update order status.
+Customers owns customer records and observes OrderCreated.
+```
 
 ### Services
 
-| Service | Responsibility | Communicates via |
+| Service | Responsibility | Typical datastore wiring |
 |---|---|---|
-| Orders | Order creation and order state | Publishes/consumes events via the pluggable event provider |
-| Customers | Customer records | Publishes/consumes events via the pluggable event provider |
-
-### Messaging — pluggable by design
-
-Rather than hard-coding a single message broker, this project defines an
-event provider abstraction that any concrete broker can implement. The
-services depend only on that abstraction, not on RabbitMQ or Kafka
-directly — swapping the underlying broker (or adding a new one) means
-writing a new implementation of the interface, not changing any service
-logic. This is the main architectural decision worth discussing in an
-interview: it trades a small amount of up-front abstraction for avoiding
-vendor lock-in to a specific broker, and it makes it straightforward to run
-the services against a lightweight in-memory provider for local
-development or testing without standing up real infrastructure.
-
-RabbitMQ and Kafka are the two concrete providers this project targets.
+| Cart | Basket items and checkout (publishes to Orders) | DynamoDB |
+| Customers | Customer records | Cosmos DB |
+| Orders | Order creation and order state | Cosmos DB |
+| Payment | Charge an order after `OrderCreated` | Cosmos DB |
+| Inventory | Stock levels and reservations after paid orders | DynamoDB |
+| Fulfilment | Shipments after successful reservation | Cosmos DB |
+| Notification | Persist/send notifications from domain events | Cosmos DB |
 
 ## Tech stack
 
 - .NET / C# — ASP.NET Core Web API per service
-- A pluggable event-provider abstraction, with RabbitMQ and Kafka as
-  concrete implementations
-- Database-per-service — each service owns its own data store, with no
-  shared database between Orders and Customers
-- Docker support (`.dockerignore` present; see Setup below)
+- MediatR for in-process use cases
+- Pluggable event-provider abstraction (Azure Service Bus and AWS SNS stubs)
+- Database-per-service via `IDbProvider`
 
 ## Project structure
 
 ```
 MicroserviceApp/
 ├── src/
-│   ├── Orders/          # Orders service
-│   └── Customers/       # Customers service
+│   ├── common/
+│   ├── cart/
+│   ├── customers/
+│   ├── orders/
+│   ├── payment/
+│   ├── inventory/
+│   ├── notification/
+│   └── fulfilment/
 ├── tests/
 │   └── MicroserviceApp.Tests/
 ├── MicroserviceApp.sln
@@ -86,10 +108,15 @@ dotnet restore
 dotnet build
 ```
 
-Run each service individually:
+Run each service individually, for example:
 ```bash
-dotnet run --project src/Orders
-dotnet run --project src/Customers
+dotnet run --project src/orders/MicroserviceApp.Orders.Api
+dotnet run --project src/customers/MicroserviceApp.Customers.Api
+dotnet run --project src/cart/MicroserviceApp.Cart.Api
+dotnet run --project src/payment/MicroserviceApp.Payment.Api
+dotnet run --project src/inventory/MicroserviceApp.Inventory.Api
+dotnet run --project src/notification/MicroserviceApp.Notification.Api
+dotnet run --project src/fulfilment/MicroserviceApp.Fulfilment.Api
 ```
 
 Since there's no API Gateway, call each service's own endpoints directly
@@ -102,51 +129,34 @@ during local testing.
   technology, avoids vendor lock-in, and makes local development/testing
   easier since a lightweight in-memory implementation can stand in for a
   real broker without infrastructure setup.
-- **Why separate Orders and Customers into different services?** Each owns
-  a distinct bounded context with its own data and its own reasons to
-  change independently.
+- **Why separate bounded contexts into different services?** Each owns
+  its own data and its own reasons to change independently.
 - **Why database-per-service here, rather than a shared database?** Keeps
-  each service's internal data model private and lets each evolve its
-  schema without coordinating with the other — the trade-off is that any
-  data consistency between Orders and Customers has to be handled through
-  events rather than a database transaction.
+  each service's internal data model private. Consistency between services
+  is handled through events rather than a database transaction.
+- **Why shared events in Common.Application?** Services should not
+  reference each other’s Application/Domain projects. They share event
+  shapes only.
 
 ## Known gaps / honest limitations
 
-This is a reference/learning project, not a production system, and a few
-things are intentionally or currently not yet in place:
+This is a reference/learning project, not a production system:
 
 - **No automated tests yet.** The `tests/MicroserviceApp.Tests` project
-  exists as scaffolding but doesn't currently have meaningful unit or
-  integration test coverage — a natural next step before presenting this
-  as evidence of testing discipline.
-- **No API Gateway.** Clients call each service directly; adding a gateway
-  (or an aggregation layer) would be a reasonable extension if this moved
-  toward looking like a deployable system.
+  exists as scaffolding.
+- **No API Gateway.**
+- **Broker and database providers are stubs** (`NotImplementedException`
+  / placeholder publish-subscribe). The wiring and service boundaries are
+  the point of the sample.
 - **No explicit failure-handling strategy yet** — retries, circuit
   breakers, or dead-letter queues around the event provider aren't
-  implemented. Worth having a point of view on this even before
-  implementing it, since it's a very likely interview follow-up question
-  for any message-driven architecture.
-- **Data consistency across services** (given no shared database or
-  distributed transactions) isn't yet handled via a specific pattern
-  (e.g., Saga, outbox) — currently an open design question rather than an
-  implemented solution.
+  implemented.
+- **Cross-service consistency** is a choreography of events, not a
+  formal Saga/outbox implementation.
 
 ## What this demonstrates
 
-- Service decomposition around bounded contexts (Orders, Customers)
-- Asynchronous, message-driven communication decoupled from any single
-  broker via a pluggable event-provider abstraction
-- Database-per-service design
-
-## Roadmap / possible extensions
-- Add real unit and integration test coverage
-- Implement a concrete failure-handling strategy (retries, circuit
-  breakers, dead-letter queues) around the event provider
-- Address cross-service data consistency explicitly (e.g., Saga or outbox
-  pattern)
-- Add an API Gateway if this moves toward a deployable system
-- Deploy to Azure with observability (Application Insights) — see the
-  [IncidentsAi](https://github.com/iyerpram/IncidentsAi) project for a
-  related direction on the ops/observability side
+- Service decomposition around bounded contexts
+- Asynchronous, message-driven communication via `IMessagingProvider`
+- Database-per-service through `IDbProvider`
+- Consistent vertical slice per service: controller → MediatR handler → repository

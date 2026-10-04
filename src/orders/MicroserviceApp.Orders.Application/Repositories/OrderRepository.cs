@@ -12,6 +12,7 @@ namespace MicroserviceApp.Orders.Application
         Task<OrderDto> GetOrderByIdAsync(Guid orderId);
         Task<IEnumerable<OrderDto>> GetOrdersAsync(string userId);
         Task<OrderDto> CreateOrderAsync(CreateOrder request);
+        Task<OrderDto> UpdateOrderStatusAsync(Guid orderId, string status);
     }
 
     public class OrderRepository : IOrderRepository
@@ -44,7 +45,8 @@ namespace MicroserviceApp.Orders.Application
             {
                 Id = Guid.NewGuid(),
                 Products = _mapper.Map<IEnumerable<Product>>(request.Products),
-                User = _mapper.Map<User>(request.User)
+                User = _mapper.Map<User>(request.User),
+                Status = "Created"
             };
             var isAdded = await _dbProvider.CreateItemAsync(order);
 
@@ -52,6 +54,17 @@ namespace MicroserviceApp.Orders.Application
                 return await Task.FromResult(_mapper.Map<OrderDto>(order));
             else
                 return null;
+        }
+
+        public async Task<OrderDto> UpdateOrderStatusAsync(Guid orderId, string status)
+        {
+            var order = await _dbProvider.GetItemAsync(orderId.ToString());
+            if (order == null)
+                return null;
+
+            order.Status = status;
+            var isUpdated = await _dbProvider.UpdateItemAsync(orderId.ToString(), order);
+            return isUpdated ? _mapper.Map<OrderDto>(order) : null;
         }
     }
 }

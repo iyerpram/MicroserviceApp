@@ -9,9 +9,9 @@ namespace MicroserviceApp.Orders.Application.Mappings
     {
         public MappingProfile() 
         {
-            CreateMap<UserDto, User>();
-            CreateMap<ProductDto, Product>();
-            CreateMap<OrderDto, Order>();
+            CreateMap<UserDto, User>().ReverseMap();
+            CreateMap<ProductDto, Product>().ReverseMap();
+            CreateMap<OrderDto, Order>().ReverseMap();
         }
     }
 }

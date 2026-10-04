@@ -7,6 +7,7 @@ namespace MicroserviceApp.Orders.Application
         public Guid Id { get; set; }
         public UserDto? User { get; set; }
         public IEnumerable<ProductDto>? Products { get; set; }
+        public string Status { get; set; } = "Created";
 
     }
 }

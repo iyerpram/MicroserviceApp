@@ -1,0 +1,22 @@
+using MicroserviceApp.Inventory.Api.Observers;
+using MicroserviceApp.Inventory.Infrastructure;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.ConfigureServices();
+builder.Services.AddHostedService<MessageObserver>();
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.ConfigureApi();
+app.MapControllers();
+
+app.Run();
